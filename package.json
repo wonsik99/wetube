@@ -1,0 +1,30 @@
+{
+    "name": "wetube",
+    "version": "1.0.0",
+    "description": "The best way to watch videos.",
+    "homepage": "https://github.com/wonsik99/wetube-reloaded#readme",
+    "bugs": {
+        "url": "https://github.com/wonsik99/wetube-reloaded/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/wonsik99/wetube-reloaded.git"
+    },
+    "license": "MIT",
+    "author": "wonsik99",
+    "type": "commonjs",
+    "main": "index.js",
+    "scripts": {
+        "dev": "nodemon --exec babel-node src/server.js"
+    },
+    "dependencies": {
+        "express": "^5.2.1",
+        "morgan": "^1.10.1"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.29.0",
+        "@babel/node": "^7.29.0",
+        "@babel/preset-env": "^7.29.0",
+        "nodemon": "^3.1.14"
+    }
+}
