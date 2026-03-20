@@ -65,13 +65,26 @@ const postEdit = (req, res) => {
     return res.redirect(`/videos/${id}`);
 };
 
+const getUpload = (req, res) => {
+    return res.render("upload", {pageTitle: "Upload Video"});
+};
 
-
-
+const postUpload = (req, res) => {
+    const {title} = req.body;
+    const newVideo = {
+        title,
+        rating: 0,
+        comments: 0,
+        createdAt: new Date(),
+        views: 0,
+        id: videos.length + 1,
+    };
+    videos.push(newVideo);
+    return res.redirect("/");
+};
 
 
 const search = (req, res) => res.send("Search");
-const upload = (req, res) => res.send("Upload Video");
 
 const deleteVideo = (req, res) => {
     const id = getValidIdOr404(req, res);
@@ -79,4 +92,4 @@ const deleteVideo = (req, res) => {
     return res.send(`Delete Video #${id}`);
 };
 
-export { trending, watch, getEdit, postEdit, search, upload, deleteVideo };   
+export { trending, watch, getEdit, postEdit, search, getUpload, postUpload, deleteVideo };   

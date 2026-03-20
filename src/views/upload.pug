@@ -1,0 +1,8 @@
+extends base.pug
+
+block content
+    h1 Upload Video
+    //- action is the URL that the form will be submitted to and default is the current URL
+    form(method="POST", action="/videos/upload")
+        input(name="title", placeholder="Title", required, type="text")
+        input(type="submit", value="Upload Video")
