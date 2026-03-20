@@ -1,0 +1,9 @@
+extends base
+include mixins/video
+
+block content
+    h1 Welcom here you will see the trending videos
+    each video in videos
+        +video(video)
+    else
+        h1 No videos found

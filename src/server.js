@@ -18,6 +18,10 @@ app.set("views", process.cwd() + "/src/views");
 // Logger middleware
 app.use(logger);
 
+// Body parser middleware
+// This is a middleware that parses the body of the request and makes it available in req.body
+app.use(express.urlencoded({ extended: true }));
+
 // Router middleware
 app.use("/", globalRouter);
 app.use("/users", userRouter);
