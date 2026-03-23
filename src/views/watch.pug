@@ -1,5 +1,6 @@
 extends base
 
 block content
-    h3 #{video.views} #{video.views > 1 ? "views" : "view"}
-    a(href=`/videos/${video.id}/edit`) Edit Video &rarr;
+    - const viewCount = video.meta && video.meta.views != null ? video.meta.views : 0
+    h3 #{viewCount} #{viewCount === 1 ? "view" : "views"}
+    a(href=`/videos/${video._id}/edit`) Edit Video &rarr;

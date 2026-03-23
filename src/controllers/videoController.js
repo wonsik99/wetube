@@ -1,32 +1,7 @@
-let videos = [
-    {
-        title: "First Video",
-        rating: 5,
-        comments: 10,
-        createdAt: "2 minutes ago",
-        views: 1,
-        id: 1,
-    },
-    {
-        title: "Second Video",
-        rating: 4,
-        comments: 10,
-        createdAt: "2 minutes ago",
-        views: 1000,
-        id: 2,
-    },
-    {
-        title: "Third Video",
-        rating: 4,
-        comments: 10,
-        createdAt: "2 minutes ago",
-        views: 574,
-        id: 3,
-    },
-];
+import Video from "../models/Video.js";
 
-const trending = (req, res) => {
-    
+const home = async (req, res) => { 
+    const videos = await Video.find({});
     return res.render("home", { pageTitle: "Home", videos });
 };
 
@@ -43,16 +18,14 @@ const watch = (req, res) => {
     const id = getValidIdOr404(req, res);
     if (!id) return;
 
-    const video = videos[id - 1];
-    return res.render("watch", {pageTitle: `Watching ${video.title}`, video});
+    return res.render("watch", {pageTitle: `Watching ${video.title}`});
 };
 
 const getEdit = (req, res) => {
     const id = getValidIdOr404(req, res);
     if (!id) return;
 
-    const video = videos[id - 1];
-    return res.render("edit", {pageTitle: `Editing: ${video.title}`, video});
+    return res.render("edit", {pageTitle: `Editing: ${video.title}`});
 };
 
 const postEdit = (req, res) => {
@@ -60,7 +33,6 @@ const postEdit = (req, res) => {
     if (!id) return;
 
     const {title} = req.body;
-    videos[id - 1].title = title;
     
     return res.redirect(`/videos/${id}`);
 };
@@ -71,15 +43,7 @@ const getUpload = (req, res) => {
 
 const postUpload = (req, res) => {
     const {title} = req.body;
-    const newVideo = {
-        title,
-        rating: 0,
-        comments: 0,
-        createdAt: new Date(),
-        views: 0,
-        id: videos.length + 1,
-    };
-    videos.push(newVideo);
+   
     return res.redirect("/");
 };
 
@@ -92,4 +56,4 @@ const deleteVideo = (req, res) => {
     return res.send(`Delete Video #${id}`);
 };
 
-export { trending, watch, getEdit, postEdit, search, getUpload, postUpload, deleteVideo };   
+export { home, watch, getEdit, postEdit, search, getUpload, postUpload, deleteVideo };   
