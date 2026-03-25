@@ -1,6 +1,7 @@
 extends base
 
 block content
-    - const viewCount = video.meta && video.meta.views != null ? video.meta.views : 0
-    h3 #{viewCount} #{viewCount === 1 ? "view" : "views"}
+    div 
+        p=video.description
+        small=video.createdAt
     a(href=`/videos/${video._id}/edit`) Edit Video &rarr;
