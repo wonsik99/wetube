@@ -11,5 +11,18 @@ const videoSchema = new mongoose.Schema({
     },
 });
 
+// This is a pre-save hook that runs before the video is saved to the database
+// videoSchema.pre('save', async function() {
+//     this.hashtags = this.hashtags[0]
+//     .split(",")
+//     .map((word) => word.startsWith("#") ? word : `#${word}`);
+// });
+
+videoSchema.static('formatHashtags', function(hashtags) {
+    return hashtags.split(",").map((word) => word.startsWith("#") ? word : `#${word}`)
+    .filter((word) => word.length > 0)
+    .map((word) => word.trim())
+});
+
 const videoModel = mongoose.model("Video", videoSchema);
 export default videoModel;

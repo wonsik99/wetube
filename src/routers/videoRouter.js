@@ -9,6 +9,6 @@ videoRouter.get("/:id", watch);
 
 videoRouter.route("/:id/edit").get(getEdit).post(postEdit);
 
-videoRouter.get("/:id/delete", deleteVideo);
+videoRouter.route("/:id/delete").get(deleteVideo);
 
 export default videoRouter;

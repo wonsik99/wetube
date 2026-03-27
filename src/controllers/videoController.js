@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import Video from "../models/Video.js";
 
 const home = async (req, res) => { 
-    const videos = await Video.find({});
+    const videos = await Video.find({}).sort({createdAt: "desc"});
     console.log(videos);
     return res.render("home", { pageTitle: "Home", videos });
 };
@@ -56,10 +56,7 @@ const postEdit = async (req, res) => {
     await Video.findByIdAndUpdate(id, {
         title,
         description,
-        hashtags: hashtags
-        .split(",").map((word) => word.startsWith("#") ? word : `#${word}`)
-        .filter((word) => word.length > 0)
-        .map((word) => word.trim())
+        hashtags: Video.formatHashtags(hashtags)
     });
     return res.redirect(`/videos/${id}`);
 };
@@ -76,11 +73,7 @@ const postUpload = async (req, res) => {
         await Video.create({
             title,
             description,
-            hashtags: hashtags
-                .split(",")
-                .map((word) => word.trim())
-                .filter((word) => word.length > 0)
-                .map((word) => (word.startsWith("#") ? word : `#${word}`))
+            hashtags: Video.formatHashtags(hashtags)
         });
         return res.redirect("/");
     } catch (error) {
@@ -88,12 +81,26 @@ const postUpload = async (req, res) => {
     }
 };
 
-const search = (req, res) => res.send("Search");
-
-const deleteVideo = (req, res) => {
+const deleteVideo = async (req, res) => {
     const id = getValidIdOr404(req, res);
     if (!id) return;
-    return res.send(`Delete Video #${id}`);
+    await Video.findByIdAndDelete(id);
+    return res.redirect("/");
+};
+
+
+const search = async (req, res) => {
+    const {keyword} = req.query;
+    let videos = [];
+    if (keyword) {
+        videos = await Video.find({
+            title: {
+                $regex: keyword,
+                $options: "i" 
+            }
+        });
+    }
+    return res.render("search", {pageTitle: "Search", videos});
 };
 
 export { home, watch, getEdit, postEdit, search, getUpload, postUpload, deleteVideo };   
