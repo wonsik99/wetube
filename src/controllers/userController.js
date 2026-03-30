@@ -67,7 +67,10 @@ const postLogin = async (req, res) => {
       });
   }
 
-  console.log("user:", user);
+  //login
+  req.session.loggedIn = true;
+  req.session.user = user;
+  
   return res.redirect("/");
 };
 

@@ -1,8 +1,10 @@
 import express from "express";
 import morgan from "morgan";
+import session from "express-session";
 import rootRouter from "./routers/rootRouter.js";
 import userRouter from "./routers/userRouter.js";
 import videoRouter from "./routers/videoRouter.js";
+import { localsMiddleware } from "./middlewares.js";
 
 const app = express();
 
@@ -20,10 +22,21 @@ app.use(logger);
 // This is a middleware that parses the body of the request and makes it available in req.body
 app.use(express.urlencoded({ extended: true }));
 
+// Session middleware
+app.use(
+  session({
+    secret: "Hello",
+    resave: true,
+    saveUninitialized: true,
+  }),
+);
+
+
+app.use(localsMiddleware);
+
 // Router middleware
 app.use("/", rootRouter);
 app.use("/users", userRouter);
 app.use("/videos", videoRouter);
-
 
 export default app;
