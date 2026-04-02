@@ -1,0 +1,11 @@
+extends base
+
+block content
+    if errorMessage
+        p(role="alert", style="color: #b00020; margin: 0 0 1rem;")= errorMessage
+    form(method="POST")
+        input(name="name", placeholder="Name", required, type="text", value=user.name)
+        input(name="email", placeholder="Email", required, type="email", value=user.email)
+        input(name="username", placeholder="Username", required, type="text", value=user.username)
+        input(name="location", placeholder="Location", required, type="text", value=user.location)
+        input(type="submit", value="Update Profile")

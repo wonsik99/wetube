@@ -71,18 +71,69 @@ const postLogin = async (req, res) => {
 };
 
 const getEdit = (req, res) => {
-    return res.render("edit-profile", { pageTitle: "Edit Profile" });
+  return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
-const postEdit = (req, res) => {
-    return res.redner("edit-profile");
+
+const postEdit = async (req, res) => {
+  const pageTitle = "Edit Profile";
+  const {
+    session: {
+      user: { _id },
+    },
+    body: { name, email, username, location },
+  } = req;
+
+  const currentUser = await User.findById(_id);
+
+  if (username !== currentUser.username) {
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+      return res.status(400).render("edit-profile", {
+        pageTitle,
+        errorMessage: "Username already exists",
+      });
+    }
+  }
+  if (email !== currentUser.email) {
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).render("edit-profile", {
+        pageTitle,
+        errorMessage: "Email already exists",
+      });
+    }
+  }
+
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      _id,
+      { name, email, username, location },
+      { new: true },
+    );
+    req.session.user = updatedUser;
+    return res.redirect("/users/edit");
+  } catch (error) {
+    if (error.code === 11000) {
+      const field = error.keyPattern?.username
+        ? "Username"
+        : error.keyPattern?.email
+          ? "Email"
+          : "Field";
+      return res.status(400).render("edit-profile", {
+        pageTitle,
+        errorMessage: `${field} already exists`,
+      });
+    }
+    throw error;
+  }
 };
 
 const remove = (req, res) => res.send("Remove User");
 const see = (req, res) => res.send("See User");
 
 const logout = (req, res) => {
-    req.session.destroy();
-    return res.redirect("/");
+  req.session.destroy();
+  return res.redirect("/");
 };
 
 const startGithubLogin = (req, res) => {
@@ -164,7 +215,8 @@ export {
   postJoin,
   getLogin,
   postLogin,
-  edit,
+  getEdit,
+  postEdit,
   remove,
   see,
   logout,
