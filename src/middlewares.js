@@ -1,6 +1,7 @@
+import multer from "multer";
+
 //localsMiddleware is a middleware that adds the loggedIn and
 //user variables to the response locals
-
 export const localsMiddleware = (req, res, next) => {
   res.locals.loggedIn = Boolean(req.session.loggedIn);
   res.locals.siteName = "Wetube";
@@ -23,3 +24,5 @@ export const publicOnlyMiddleware = (req, res, next) => {
     return res.redirect("/");
   }
 };
+
+export const uploadFiles = multer({ dest: "uploads/" });

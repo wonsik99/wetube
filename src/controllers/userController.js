@@ -1,9 +1,9 @@
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 
-const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
+export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 
-const postJoin = async (req, res) => {
+export const postJoin = async (req, res) => {
   const { name, email, username, password, password2, location } = req.body;
 
   const pageTitle = "Join";
@@ -37,9 +37,10 @@ const postJoin = async (req, res) => {
   }
 };
 
-const getLogin = (req, res) => res.render("login", { pageTitle: "Login" });
+export const getLogin = (req, res) =>
+  res.render("login", { pageTitle: "Login" });
 
-const postLogin = async (req, res) => {
+export const postLogin = async (req, res) => {
   const pageTitle = "Login";
   const { username, password } = req.body;
 
@@ -70,21 +71,23 @@ const postLogin = async (req, res) => {
   return res.redirect("/");
 };
 
-const getEdit = (req, res) => {
+export const getEdit = (req, res) => {
   return res.render("edit-profile", { pageTitle: "Edit Profile" });
 };
 
-const postEdit = async (req, res) => {
+export const postEdit = async (req, res) => {
   const pageTitle = "Edit Profile";
   const {
     session: {
-      user: { _id },
+      user: { _id, avatarUrl },
     },
     body: { name, email, username, location },
+    file,
   } = req;
 
   const currentUser = await User.findById(_id);
 
+  // check username
   if (username !== currentUser.username) {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
@@ -94,6 +97,8 @@ const postEdit = async (req, res) => {
       });
     }
   }
+
+  // check email
   if (email !== currentUser.email) {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
@@ -104,10 +109,17 @@ const postEdit = async (req, res) => {
     }
   }
 
+  // update user
   try {
     const updatedUser = await User.findByIdAndUpdate(
       _id,
-      { name, email, username, location },
+      {
+        name,
+        email,
+        username,
+        location,
+        avatarUrl: file ? file.path : avatarUrl,
+      },
       { new: true },
     );
     req.session.user = updatedUser;
@@ -128,15 +140,15 @@ const postEdit = async (req, res) => {
   }
 };
 
-const remove = (req, res) => res.send("Remove User");
-const see = (req, res) => res.send("See User");
+export const remove = (req, res) => res.send("Remove User");
+export const see = (req, res) => res.send("See User");
 
-const logout = (req, res) => {
+export const logout = (req, res) => {
   req.session.destroy();
   return res.redirect("/");
 };
 
-const startGithubLogin = (req, res) => {
+export const startGithubLogin = (req, res) => {
   const baseUrl = `https://github.com/login/oauth/authorize`;
   const config = {
     client_id: process.env.GITHUB_CLIENT_ID,
@@ -148,7 +160,7 @@ const startGithubLogin = (req, res) => {
   return res.redirect(finalUrl);
 };
 
-const finishGithubLogin = async (req, res) => {
+export const finishGithubLogin = async (req, res) => {
   const baseUrl = `https://github.com/login/oauth/access_token`;
   const config = {
     client_id: process.env.GITHUB_CLIENT_ID,
@@ -210,16 +222,44 @@ const finishGithubLogin = async (req, res) => {
   }
 };
 
-export {
-  getJoin,
-  postJoin,
-  getLogin,
-  postLogin,
-  getEdit,
-  postEdit,
-  remove,
-  see,
-  logout,
-  startGithubLogin,
-  finishGithubLogin,
+export const getChangePassword = (req, res) => {
+  if (req.session.user?.socialOnly) {
+    return res.redirect("/");
+  }
+  return res.render("change-password", { pageTitle: "Change Password" });
+};
+
+export const postChangePassword = async (req, res) => {
+  const {
+    session: {
+      user: { _id, password },
+    },
+    body: { oldPassword, newPassword, newPasswordConfirmation },
+  } = req;
+
+  // check old password
+  const ok = await bcrypt.compare(oldPassword, password);
+  if (!ok) {
+    return res.status(400).render("change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "Old password is incorrect",
+    });
+  }
+
+  // check new password
+  if (newPassword !== newPasswordConfirmation) {
+    return res.status(400).render("change-password", {
+      pageTitle: "Change Password",
+      errorMessage: "Passwords do not match",
+    });
+  }
+
+  // update password
+  const user = await User.findById(_id);
+  user.password = newPassword;
+  await user.save();
+  req.session.user = user;
+
+  // send notification
+  return res.redirect("/users/logout");
 };

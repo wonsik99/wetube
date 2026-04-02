@@ -38,8 +38,10 @@ app.use(
   }),
 );
 
-
 app.use(localsMiddleware);
+
+// Static file middleware
+app.use("/uploads", express.static("uploads"));
 
 // Router middleware
 app.use("/", rootRouter);
