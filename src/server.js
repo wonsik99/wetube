@@ -41,6 +41,7 @@ app.use(
 app.use(localsMiddleware);
 
 // Static file middleware
+app.use("/assets", express.static("assets"));
 app.use("/uploads", express.static("uploads"));
 
 // Router middleware

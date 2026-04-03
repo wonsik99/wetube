@@ -8,13 +8,16 @@ const userSchema = new mongoose.Schema({
     username: {type: String, required: true, unique: true},
     password: {type: String},
     name: {type: String, required: true},
-    location: {type: String}
+    location: {type: String},
+    videos: [{type: mongoose.Schema.Types.ObjectId, ref: "Video"}],
 });
 
 // Hash the password before saving the user
 userSchema.pre("save", async function () {
     // console.log("password:", this.password);
-    this.password = await bcrypt.hash(this.password, 5);
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 5);
+    }
     // console.log("hashed password:", this.password);
 });
 

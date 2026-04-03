@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
 
@@ -141,7 +142,15 @@ export const postEdit = async (req, res) => {
 };
 
 export const remove = (req, res) => res.send("Remove User");
-export const see = (req, res) => res.send("See User");
+
+export const see = async (req, res) => {
+  const {id} = req.params;
+  const user = await User.findById(id).populate("videos");
+  if (!user) {
+    return res.status(404).render("404", { pageTitle: "User not found" });
+  }
+  return res.render("profile", { pageTitle: `${user.name}'s Profile`, user});
+};
 
 export const logout = (req, res) => {
   req.session.destroy();
