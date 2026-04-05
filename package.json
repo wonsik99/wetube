@@ -2,13 +2,13 @@
   "name": "wetube",
   "version": "1.0.0",
   "description": "The best way to watch videos.",
-  "homepage": "https://github.com/wonsik99/wetube-reloaded#readme",
+  "homepage": "https://github.com/wonsik99/wetube#readme",
   "bugs": {
-    "url": "https://github.com/wonsik99/wetube-reloaded/issues"
+    "url": "https://github.com/wonsik99/wetube/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wonsik99/wetube-reloaded.git"
+    "url": "git+https://github.com/wonsik99/wetube.git"
   },
   "license": "MIT",
   "author": "wonsik99",

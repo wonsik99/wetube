@@ -11,7 +11,8 @@ form {
   }
 }
 
-input {
+input:not([type="range"]),
+textarea {
   all: unset;
   padding: 15px 20px;
   border-radius: 5px;
