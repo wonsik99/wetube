@@ -1,13 +1,24 @@
 extends base
 
 block content
-    video(src="/" + video.fileUrl, controls)
-    div
-        button#play Play
-        button#mute Mute
-        span#time 00:00/00:00
-        input(type="range",step="0.1", min="0", max="1")#volume
-
+    div.watch
+        div.watch__container#videoContainer(data-video-id=video.id)
+            video.watch__video(src="/" + video.fileUrl)
+            div.watch__controls#videoControls.showing
+                div.watch__row.watch__row--timeline
+                    input.watch__timeline(type="range", step="1", min="0", value="0")#timeline
+                div.watch__row
+                    button.watch__btn.watch__btn--icon#play(type="button", aria-label="Play")
+                        i.fas.fa-play
+                    button.watch__btn.watch__btn--icon#mute(type="button", aria-label="Mute")
+                        i.fas.fa-volume-up
+                    input.watch__volume(type="range", step="0.1", min="0", max="1")#volume
+                    div.watch__time
+                        span#time 00:00
+                        span.watch__time-sep /
+                        span#totalTime 00:00
+                    button.watch__btn.watch__btn--ghost.watch__btn--icon#fullScreen(type="button", aria-label="Full screen")
+                        i.fas.fa-expand
 
     //- div 
     //-     p=video.description
