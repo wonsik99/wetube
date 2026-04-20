@@ -1,9 +1,14 @@
 extends base.pug
 
 block content
-    div 
-        video#preview
-        button#startBtn Start Recording
+    div.upload__container
+        div.upload__video
+            div.upload__preview
+                video#preview(muted, playsinline)
+                div#recIndicator.upload__rec
+                    span.upload__rec-dot
+                    span.upload__rec-label REC
+            button#startBtn.social__btn Start Recording
     if errorMessage
         span=errorMessage
     //- action is the URL that the form will be submitted to and default is the current URL
@@ -11,6 +16,8 @@ block content
     form(method="POST", enctype="multipart/form-data")
         label(for="video") Video
         input(name="video", type="file", accept="video/*", required, id="video")
+        label(for="thumbnail") Thumbnail
+        input(name="thumbnail", type="file", accept="image/*", required, id="thumbnail")
         input(name="title", placeholder="Title", required, type="text", maxlength=80)
         input(name="description", placeholder="Description", required, type="text", minlength=20)
         input(name="hashtags", placeholder="Hashtags, separated by comma.", required, type="text")
