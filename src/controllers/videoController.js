@@ -42,7 +42,7 @@ const getEdit = async (req, res) => {
   }
 
   if (String(video.owner) !== String(_id)) {
-    res.status(403).send("Forbidden");
+    req.flash("error", "Not authorized");
     return redirect("/");
   }
   return res.render("edit", { pageTitle: `Editing: ${video.title}`, video });

@@ -8,7 +8,10 @@ block content
                 div#recIndicator.upload__rec
                     span.upload__rec-dot
                     span.upload__rec-label REC
-            button#startBtn.social__btn Start Recording
+            div.upload__actions
+                button#startBtn.social__btn(type="button") Start Recording
+                button#downloadVideoBtn.social__btn(type="button", hidden) Download Video
+                button#downloadThumbnailBtn.social__btn(type="button", hidden) Download Thumbnail
     if errorMessage
         span=errorMessage
     //- action is the URL that the form will be submitted to and default is the current URL

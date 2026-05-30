@@ -10,8 +10,19 @@
     flex-direction: column;
     align-items: center;
 
-    #startBtn {
+    .upload__actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .social__btn {
       min-width: 240px;
+
+      &[hidden] {
+        display: none;
+      }
     }
   }
 
