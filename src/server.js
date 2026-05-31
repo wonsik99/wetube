@@ -25,6 +25,9 @@ app.use(logger);
 // This is a middleware that parses the body of the request and makes it available in req.body
 app.use(express.urlencoded({ extended: true }));
 
+// JSON parser middleware
+app.use(express.json());
+
 // Session middleware
 app.use(
   session({

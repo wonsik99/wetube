@@ -20,16 +20,61 @@ block content
                     button.watch__btn.watch__btn--ghost.watch__btn--icon#fullScreen(type="button", aria-label="Full screen")
                         i.fas.fa-expand
 
-    //- div 
-    //-     p=video.description
-    //-     small=video.createdAt
-    //- div
-    //-     small Uploaded by 
-    //-         a(href=`/users/${video.owner._id}`)=video.owner.name
-    //- if String(video.owner._id) === String(user._id)
-    //-     a(href=`/videos/${video._id}/edit`) Edit Video &rarr;
-    //-     br
-    //-     a(href=`/videos/${video._id}/delete`) Delete Video &rarr;
-
+        section.watch__meta
+            div.watch__meta-header
+                div
+                    h1.watch__title=video.title
+                    p.watch__byline
+                        span Uploaded by
+                        a(href=`/users/${video.owner._id}`)=video.owner.name
+                span.watch__date=video.createdAt.toLocaleDateString("ko-KR")
+            p.watch__description=video.description
+            if String(video.owner._id) === String(user._id)
+                div.watch__owner-actions
+                    a(href=`/videos/${video._id}/edit`) Edit Video
+                    a(href=`/videos/${video._id}/delete`) Delete Video
+    
+        section.watch__comments
+            div.watch__comments-header
+                div
+                    h2 Comments
+                    span Share what you thought about this video.
+                strong.watch__comment-count #{video.comments.length} comments
+            if loggedIn
+                form.video__comment-form#commentForm
+                    textarea(name="text", rows="4", placeholder="Write a nice comment...")
+                    button(type="submit") Add Comment
+            else
+                p.watch__login-message Log in to leave a comment.
+            ul.watch__comment-list
+                each comment in video.comments.slice().reverse()
+                    - const ownerName = comment.owner && comment.owner.name ? comment.owner.name : "Anonymous";
+                    - const ownerAvatarUrl = comment.owner && comment.owner.avatarUrl ? comment.owner.avatarUrl : "";
+                    - const ownerAvatarSrc = ownerAvatarUrl && (ownerAvatarUrl.startsWith("http") || ownerAvatarUrl.startsWith("/")) ? ownerAvatarUrl : `/${ownerAvatarUrl}`;
+                    - const isCommentOwner = loggedIn && comment.owner && String(comment.owner._id) === String(user._id);
+                    - const commentLikes = comment.likes || [];
+                    - const isCommentLiked = loggedIn && commentLikes.some((like) => String(like) === String(user._id));
+                    li.watch__comment(data-id=comment._id)
+                        if ownerAvatarUrl
+                            img.watch__comment-avatar(src=ownerAvatarSrc, alt=ownerName)
+                        else
+                            div.watch__comment-avatar=ownerName.charAt(0).toUpperCase()
+                        div.watch__comment-body
+                            div.watch__comment-meta
+                                strong=ownerName
+                                div.watch__comment-actions
+                                    span=comment.createdAt.toLocaleDateString("ko-KR")
+                            p=comment.text
+                            div.watch__comment-footer
+                                if loggedIn
+                                    button.watch__comment-like(type="button", class=isCommentLiked ? "is-liked" : "", data-liked=isCommentLiked ? "true" : "false", aria-label=isCommentLiked ? "Unlike comment" : "Like comment")
+                                        i.watch__comment-like-icon(class=isCommentLiked ? "fas fa-heart" : "far fa-heart", aria-hidden="true")
+                                        span.watch__comment-like-count=commentLikes.length
+                                if isCommentOwner
+                                    button.watch__comment-delete(type="button", aria-label="Delete comment") Delete
+                else
+                    li.watch__empty-comments No comments yet. Be the first to start the conversation.
 block scripts
     script(src="/assets/js/videoPlayer.js")
+    if loggedIn
+        script(src="/assets/js/commentSection.js")

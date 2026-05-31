@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/User.js";
 import Video from "../models/Video.js";
+import Comment from "../models/Comment.js";
 
 const home = async (req, res) => {
   const videos = await Video.find({})
@@ -22,7 +23,12 @@ const watch = async (req, res) => {
   const id = getValidIdOr404(req, res);
   if (!id) return;
 
-  const video = await Video.findById(id).populate("owner");
+  const video = await Video.findById(id).populate("owner").populate({
+    path: "comments",
+    populate: {
+      path: "owner",
+    },
+  });
   if (!video) {
     res.status(404).send("Video not found");
     return;
@@ -32,7 +38,9 @@ const watch = async (req, res) => {
 
 const getEdit = async (req, res) => {
   const id = getValidIdOr404(req, res);
-  const {user: {_id}} = req.session;
+  const {
+    user: { _id },
+  } = req.session;
   if (!id) return;
 
   const video = await Video.findById(id);
@@ -129,12 +137,156 @@ const search = async (req, res) => {
 const registerView = async (req, res) => {
   const { id } = req.params;
   const video = await Video.findById(id);
-  if(!video) {
-    return res.sendStatus(404).json({ success: false, message: "Video not found" });
+  if (!video) {
+    return res
+      .sendStatus(404)
+      .json({ success: false, message: "Video not found" });
   }
   video.meta.views = video.meta.views + 1;
   await video.save();
   return res.sendStatus(200);
+};
+
+const createComment = async (req, res) => {
+  const {
+    session: { user },
+    body: { text },
+    params: { id },
+  } = req;
+
+  if (!user?._id) {
+    return res.sendStatus(401);
+  }
+
+  if (!text?.trim()) {
+    return res.sendStatus(400);
+  }
+
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.sendStatus(404);
+  }
+  const comment = await Comment.create({
+    text: text.trim(),
+    owner: user._id,
+    video: id,
+  });
+
+  await User.findByIdAndUpdate(user._id, {
+    $push: { comments: comment._id },
+  });
+  await Video.findByIdAndUpdate(id, {
+    $push: { comments: comment._id },
+  });
+
+  return res.status(201).json({
+    success: true,
+    newComment: {
+      _id: comment._id,
+      text: comment.text,
+      createdAt: comment.createdAt,
+      likesCount: 0,
+      liked: false,
+      owner: {
+        name: user.name,
+        avatarUrl: user.avatarUrl,
+      },
+    },
+  });
+};
+
+const deleteComment = async (req, res) => {
+  const {
+    session: { user },
+    params: { id },
+  } = req;
+
+  if (!user?._id) {
+    return res.sendStatus(401);
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.sendStatus(404);
+  }
+
+  const comment = await Comment.findById(id);
+  if (!comment) {
+    return res.sendStatus(404);
+  }
+
+  if (String(comment.owner) !== String(user._id)) {
+    return res.sendStatus(403);
+  }
+
+  await Comment.findByIdAndDelete(id);
+  await User.findByIdAndUpdate(user._id, {
+    $pull: { comments: comment._id },
+  });
+  await Video.findByIdAndUpdate(comment.video, {
+    $pull: { comments: comment._id },
+  });
+
+  return res.sendStatus(200);
+};
+
+const likeComment = async (req, res) => {
+  const {
+    session: { user },
+    params: { id },
+  } = req;
+
+  if (!user?._id) {
+    return res.sendStatus(401);
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.sendStatus(404);
+  }
+
+  const comment = await Comment.findByIdAndUpdate(
+    id,
+    { $addToSet: { likes: user._id } },
+    { new: true },
+  );
+  if (!comment) {
+    return res.sendStatus(404);
+  }
+
+  return res.status(200).json({
+    success: true,
+    liked: true,
+    likesCount: comment.likes.length,
+  });
+};
+
+const unlikeComment = async (req, res) => {
+  const {
+    session: { user },
+    params: { id },
+  } = req;
+
+  if (!user?._id) {
+    return res.sendStatus(401);
+  }
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.sendStatus(404);
+  }
+
+  const comment = await Comment.findByIdAndUpdate(
+    id,
+    { $pull: { likes: user._id } },
+    { new: true },
+  );
+  if (!comment) {
+    return res.sendStatus(404);
+  }
+
+  return res.status(200).json({
+    success: true,
+    liked: false,
+    likesCount: comment.likes.length,
+  });
 };
 
 export {
@@ -147,4 +299,8 @@ export {
   postUpload,
   deleteVideo,
   registerView,
+  createComment,
+  deleteComment,
+  likeComment,
+  unlikeComment,
 };
