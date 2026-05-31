@@ -16,36 +16,41 @@
   "main": "index.js",
   "scripts": {
     "dev:server": "nodemon",
-    "dev:assets": "webpack"
+    "dev:assets": "webpack --mode=development --watch",
+    "build:server": "babel src -d dist --ignore src/client",
+    "build:assets": "webpack --mode=production",
+    "build": "npm run build:server && npm run build:assets",
+    "start": "node dist/init.js"
   },
   "dependencies": {
+    "@babel/cli": "^7.29.7",
     "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "bcrypt": "^6.0.0",
     "connect-mongo": "^6.0.0",
-    "dotenv": "^17.3.1",
+    "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-flash": "^0.0.2",
     "express-session": "^1.19.0",
-    "mongoose": "^9.3.1",
+    "mongoose": "^9.6.3",
     "morgan": "^1.10.1",
     "multer": "^2.1.1",
-    "pug": "^3.0.3"
+    "pug": "^3.0.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@babel/node": "^7.29.0",
-    "@babel/preset-env": "^7.29.0",
+    "@babel/core": "^7.29.7",
+    "@babel/node": "^7.29.7",
+    "@babel/preset-env": "^7.29.7",
     "babel-loader": "^10.1.1",
     "copy-webpack-plugin": "^14.0.0",
     "css-loader": "^7.1.4",
     "mini-css-extract-plugin": "^2.10.2",
     "nodemon": "^3.1.14",
-    "sass": "^1.99.0",
-    "sass-loader": "^16.0.7",
+    "sass": "^1.100.0",
+    "sass-loader": "^17.0.0",
     "style-loader": "^4.0.0",
-    "webpack": "^5.105.4",
-    "webpack-cli": "^7.0.2"
+    "webpack": "^5.107.2",
+    "webpack-cli": "^7.0.3"
   }
 }
