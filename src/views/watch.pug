@@ -3,7 +3,7 @@ extends base
 block content
     div.watch
         div.watch__container#videoContainer(data-video-id=video.id)
-            video.watch__video(src="/" + video.fileUrl)
+            video.watch__video(src=(video.fileUrl.startsWith("http") ? video.fileUrl : "/" + video.fileUrl), playsinline, webkit-playsinline)
             div.watch__controls#videoControls.showing
                 div.watch__row.watch__row--timeline
                     input.watch__timeline(type="range", step="1", min="0", value="0")#timeline
