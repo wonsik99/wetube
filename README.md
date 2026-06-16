@@ -2,6 +2,9 @@
 
 > A full-stack YouTube-style video platform built with Node.js, Express, and MongoDB — featuring GitHub OAuth, AWS S3 media storage, a custom HTML5 video player, and in-browser recording with FFmpeg (WASM).
 
+**🔗 Live Demo: [wetube-tkkg.onrender.com](https://wetube-tkkg.onrender.com)**
+
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?logo=render&logoColor=white)](https://wetube-tkkg.onrender.com)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
 ![Express](https://img.shields.io/badge/Express-000000?logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?logo=mongodb&logoColor=white)
