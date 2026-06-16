@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import User from "../models/User.js";
 import Video from "../models/Video.js";
 import Comment from "../models/Comment.js";
+import { removeFile } from "../middlewares.js";
 
 const home = async (req, res) => {
   const videos = await Video.find({})
@@ -93,7 +94,9 @@ const postUpload = async (req, res) => {
       title,
       description,
       fileUrl: video[0].location,
+      fileKey: video[0].key,
       thumbnailUrl: thumbnail[0].location,
+      thumbnailKey: thumbnail[0].key,
       hashtags: Video.formatHashtags(hashtags),
       owner: _id,
     });
@@ -112,7 +115,27 @@ const postUpload = async (req, res) => {
 const deleteVideo = async (req, res) => {
   const id = getValidIdOr404(req, res);
   if (!id) return;
+
+  const {
+    user: { _id },
+  } = req.session;
+
+  const video = await Video.findById(id);
+  if (!video) {
+    return res.status(404).send("Video not found");
+  }
+  if (String(video.owner) !== String(_id)) {
+    req.flash("error", "Not authorized");
+    return res.status(403).redirect("/");
+  }
+
+  await removeFile(video.fileKey);
+  await removeFile(video.thumbnailKey);
+
+  await Comment.deleteMany({ video: id });
+  await User.findByIdAndUpdate(_id, { $pull: { videos: id } });
   await Video.findByIdAndDelete(id);
+
   return res.redirect("/");
 };
 

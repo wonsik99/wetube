@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/User.js";
 import bcrypt from "bcrypt";
+import { removeFile } from "../middlewares.js";
 
 export const getJoin = (req, res) => res.render("join", { pageTitle: "Join" });
 
@@ -112,6 +113,9 @@ export const postEdit = async (req, res) => {
 
   // update user
   try {
+    if (file && currentUser.avatarKey) {
+      await removeFile(currentUser.avatarKey);
+    }
     const updatedUser = await User.findByIdAndUpdate(
       _id,
       {
@@ -120,6 +124,7 @@ export const postEdit = async (req, res) => {
         username,
         location,
         avatarUrl: file ? file.location : avatarUrl,
+        avatarKey: file ? file.key : currentUser.avatarKey,
       },
       { new: true },
     );
