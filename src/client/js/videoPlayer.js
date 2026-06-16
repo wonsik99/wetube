@@ -88,14 +88,28 @@ const handleTimelineChange = (event) => {
 };
 
 const handleFullscreen = () => {
-  const fullscreen = document.fullscreenElement;
+  const fullscreen =
+    document.fullscreenElement || document.webkitFullscreenElement;
   if (fullscreen) {
-    document.exitFullscreen();
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
     fullScreenIcon.className = "fas fa-expand";
-  } else {
-    videoContainer.requestFullscreen();
-    fullScreenIcon.className = "fas fa-compress";
+    return;
   }
+  if (videoContainer.requestFullscreen) {
+    videoContainer.requestFullscreen();
+  } else if (videoContainer.webkitRequestFullscreen) {
+    videoContainer.webkitRequestFullscreen();
+  } else if (video.webkitEnterFullscreen) {
+    // iOS Safari only allows the <video> element itself to go fullscreen
+    // (with native controls), not arbitrary container elements.
+    video.webkitEnterFullscreen();
+    return;
+  }
+  fullScreenIcon.className = "fas fa-compress";
 };
 
 const hideControls = () => videoControls.classList.remove("showing");

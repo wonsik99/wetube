@@ -444,3 +444,31 @@
     font-size: 24px;
   }
 }
+
+@media (max-width: 560px) {
+  .watch__controls {
+    padding: 8px 10px 10px;
+    gap: 8px;
+  }
+
+  .watch__row {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  // iOS ignores the volume property, so the slider is dead weight on mobile.
+  .watch__volume {
+    display: none;
+  }
+
+  .watch__btn--icon {
+    min-width: 2.4rem;
+    min-height: 2.4rem;
+    font-size: 1.05rem;
+  }
+
+  .watch__time {
+    min-width: auto;
+    font-size: 12px;
+  }
+}
