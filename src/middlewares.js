@@ -60,11 +60,36 @@ export const publicOnlyMiddleware = (req, res, next) => {
   }
 };
 
+const MAX_AVATAR_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
+
 export const avatarUpload = multer({
   storage: s3AvatarStorage,
-  limits: { fileSize: 5000000 },
-}); // 5MB
+  limits: { fileSize: MAX_AVATAR_SIZE },
+});
 export const videoUpload = multer({
   storage: s3VideoStorage,
-  limits: { fileSize: 20000000 },
-}); // 20MB
+  limits: { fileSize: MAX_VIDEO_SIZE },
+});
+
+// Runs the video/thumbnail upload and turns Multer errors (e.g. file too
+// large) into a friendly message instead of a 500.
+export const uploadVideoFiles = (req, res, next) => {
+  const upload = videoUpload.fields([
+    { name: "video", maxCount: 1 },
+    { name: "thumbnail", maxCount: 1 },
+  ]);
+  upload(req, res, (err) => {
+    if (err) {
+      const errorMessage =
+        err.code === "LIMIT_FILE_SIZE"
+          ? "File is too large. Maximum upload size is 50MB."
+          : "Upload failed. Please try again.";
+      return res.status(400).render("upload", {
+        pageTitle: "Upload Video",
+        errorMessage,
+      });
+    }
+    next();
+  });
+};
