@@ -1,2 +1,12 @@
-$red: #cc0d00;
-$bg: #3d3f45;
+// Brand palette is derived from the Wetube logo (blue gradient).
+// Names are kept for backwards-compat; values are the blue theme.
+$red: #2b8fd6;
+$red-hover: #3aa0e6;
+$bg: #101114;
+$surface: #181b22;
+$surface-strong: #20242d;
+$text: #f7f8fb;
+$muted: #a8afbd;
+$line: rgba(255, 255, 255, 0.1);
+$accent: #38bdf8;
+$gold: #1c6392;

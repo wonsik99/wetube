@@ -23,6 +23,7 @@
     "start": "node dist/init.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1069.0",
     "@babel/cli": "^7.29.7",
     "@ffmpeg/core": "^0.12.10",
     "@ffmpeg/ffmpeg": "^0.12.15",
@@ -36,6 +37,7 @@
     "mongoose": "^9.6.3",
     "morgan": "^1.10.1",
     "multer": "^2.1.1",
+    "multer-s3": "^3.0.1",
     "pug": "^3.0.4"
   },
   "devDependencies": {

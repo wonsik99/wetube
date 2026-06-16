@@ -1,21 +1,107 @@
+@use "../config/variables" as *;
+
 // video mixin
 .video-mixin {
-  .video-mixin__thumb {
-    height: 140px;
-    border-radius: 7px;
-    width: 100%;
-    background-color: ivory;
-  }
-  .video-mixin__data {
-    padding: 0px 15px;
-    .video-mixin__title {
-      font-size: 18px;
-      display: block;
-      margin-top: 10px;
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid $line;
+  border-radius: 8px;
+  background: rgba($surface, 0.88);
+  box-shadow: 0 18px 38px rgba(0, 0, 0, 0.18);
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: rgba($red, 0.5);
+    transform: translateY(-4px);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
+
+    .video-mixin__play {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
     }
+  }
+
+  .video-mixin__thumb {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    background:
+      linear-gradient(135deg, rgba($red, 0.26), rgba($accent, 0.18)),
+      $surface-strong;
+    background-position: center;
+    background-size: cover;
+  }
+
+  .video-mixin__thumb::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background: linear-gradient(180deg, transparent 48%, rgba(0, 0, 0, 0.58));
+  }
+
+  .video-mixin__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.92);
+    color: $red;
+    font-size: 22px;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.92);
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
+  }
+
+  .video-mixin__data {
+    padding: 14px;
+
+    .video-mixin__title {
+      display: -webkit-box;
+      min-height: 2.8em;
+      overflow: hidden;
+      color: $text;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+    }
+
     .video-mixin__meta {
-      margin-top: 5px;
-      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      color: $muted;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .video-mixin__owner {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .video-mixin__views {
+      display: block;
+      flex-shrink: 0;
+      color: rgba(255, 255, 255, 0.72);
     }
   }
 }

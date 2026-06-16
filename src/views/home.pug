@@ -2,8 +2,14 @@ extends base
 include mixins/video
 
 block content
+    div.section-heading
+        div
+            h2 Recently uploaded
+        a.section-heading__link(href="/search") Search all
     div.video-grid
         each video in videos
             +video(video)
         else
-            span.empty__message No videos found
+            div.empty__message
+                i.far.fa-play-circle
+                span No videos found

@@ -1,25 +1,26 @@
-header
-    a(href="/").header__logo
-        i.fab.fa-youtube
-    nav
+header.site-header
+    a(href="/").header__brand(aria-label="Wetube home")
+        img.header__logo(src="/assets/img/logo.png", alt="Wetube")
+        span Wetube
+    nav.header__nav(aria-label="Primary navigation")
         ul
             if !loggedIn
                 li
-                    a(href="/join") Join
+                    a.header__link.header__link--primary(href="/join") Join
                 li
-                    a(href="/login") Login
+                    a.header__link(href="/login") Login
             else
                 li
-                    a(href="/videos/upload") Upload Video
+                    a.header__link.header__link--primary(href="/videos/upload") Upload
                 li 
-                    a(href=`/users/${user._id}`)
+                    a.header__profile(href=`/users/${user._id}`, aria-label="Profile")
                         if !user.avatarUrl
-                            span 😀
+                            span.header__avatar-fallback= user.name ? user.name.charAt(0).toUpperCase() : "U"
                         else
                             img.header__avatar(src=user.avatarUrl, alt=user.name)
                 li 
-                    a(href="/users/edit") Edit Profile
+                    a.header__link(href="/users/edit") Profile
                 li 
-                    a(href="/users/logout") Logout
+                    a.header__link(href="/users/logout") Logout
             li
-                a(href="/search") Search
+                a.header__link(href="/search") Search

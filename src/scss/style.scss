@@ -19,12 +19,21 @@
 @use "./screens/upload" as *;
 
 // defaults
+* {
+  box-sizing: border-box;
+}
+
 a {
   color: inherit;
   text-decoration: none;
 }
 
+html {
+  min-height: 100%;
+}
+
 body {
+  min-height: 100vh;
   font-family:
     system-ui,
     -apple-system,
@@ -37,15 +46,28 @@ body {
     "Open Sans",
     "Helvetica Neue",
     sans-serif;
-  background-color: $bg;
-  color: white;
+  background:
+    linear-gradient(90deg, rgba($red, 0.22), rgba($accent, 0.16), rgba($gold, 0.1)) top / 100% 3px no-repeat,
+    linear-gradient(180deg, #111217 0%, #171a21 46%, #101114 100%);
+  color: $text;
+}
+
+a,
+button,
+input,
+textarea {
+  &:focus-visible {
+    outline: 2px solid rgba($red, 0.78);
+    outline-offset: 3px;
+  }
 }
 
 main {
-  max-width: 1200px;
+  max-width: 1180px;
   width: 100%;
   margin: 0 auto;
-  margin-top: 50px;
+  margin-top: 38px;
+  padding: 0 24px;
 }
 
 @keyframes fadeOut {
@@ -61,14 +83,14 @@ main {
 
 .message {
   position: fixed;
-  z-index: 10;
+  z-index: 20;
   top: 20px;
   left: 0;
   right: 0;
   margin: 0 auto;
   max-width: 420px;
   padding: 12px 20px;
-  border-radius: 100px;
+  border-radius: 8px;
   text-align: center;
   font-size: 14px;
   font-weight: 600;
@@ -82,7 +104,14 @@ main {
   }
 
   &.info {
-    background-color: white;
+    background-color: $text;
     color: $bg;
+  }
+}
+
+@media (max-width: 720px) {
+  main {
+    margin-top: 26px;
+    padding: 0 16px;
   }
 }

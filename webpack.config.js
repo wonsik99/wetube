@@ -19,6 +19,10 @@ module.exports = {
           from: "node_modules/@ffmpeg/ffmpeg/dist/umd/814.ffmpeg.js",
           to: "js/[name][ext]",
         },
+        {
+          from: "src/client/img",
+          to: "img",
+        },
       ],
     }),
   ],

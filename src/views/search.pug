@@ -2,6 +2,14 @@ extends base
 include mixins/video
 
 block content
+  section.search__header
+    span.search__eyebrow Search
+    if keyword
+      h1 Results for "#{keyword}"
+      p #{videos.length} #{videos.length === 1 ? "video" : "videos"} found
+    else
+      h1 Find your next video
+      p Search by title
   form.search__form(method="GET", action="/search")
     input(name="keyword", type="text", placeholder="Search by title", value=keyword)
     button(type="submit")
@@ -11,4 +19,6 @@ block content
     each video in videos
       +video(video)
     else
-      span.empty__message No videos found.
+      div.empty__message
+        i.far.fa-folder-open
+        span No videos found.

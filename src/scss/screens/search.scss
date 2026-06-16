@@ -1,26 +1,78 @@
+@use "../config/variables" as *;
+
+.search__eyebrow {
+  color: $accent;
+  font-size: 12px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.search__header {
+  max-width: 760px;
+  margin: 0 auto 22px;
+  text-align: center;
+
+  h1 {
+    margin-top: 10px;
+    font-size: clamp(34px, 7vw, 58px);
+    font-weight: 900;
+    letter-spacing: 0;
+    line-height: 1;
+  }
+
+  p {
+    margin-top: 12px;
+    color: $muted;
+    font-size: 16px;
+  }
+}
+
 .search__form {
-  margin-bottom: 60px;
+  max-width: 720px;
+  margin-bottom: 44px;
   display: flex;
   position: relative;
   align-items: center;
+
   input {
     all: unset;
-    padding: 15px 20px;
-    border-radius: 5px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background-color: black;
-    margin-bottom: 5px;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 17px 58px 17px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.28);
+    margin-bottom: 0;
     font-size: 16px;
-    color: white;
-    width: 90%;
+    color: $text;
+
+    &:focus {
+      border-color: rgba($red, 0.72);
+      box-shadow: 0 0 0 4px rgba($red, 0.14);
+    }
   }
+
   button {
     all: unset;
     position: absolute;
-    right: 15px;
-    font-size: 18px;
-    background-color: rgba(0, 0, 0, 0);
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    font-size: 21px;
+    background-color: $red;
     text-align: center;
     cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      transform 0.15s ease;
+
+    &:hover {
+      background-color: $red-hover;
+      transform: translateY(-1px);
+    }
   }
 }
